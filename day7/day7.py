@@ -16,9 +16,13 @@ def puzzle1():
 
 
 def puzzle2():
-  lines = parse_input()
-  # TODO
-  return
+  numbers = parse_input()
+  smallest = float("inf")
+  fuelCost = lambda n: n*(n+1)/2
+  for i in range(min(numbers), max(numbers)+1):
+    val = int(sum([fuelCost(abs(x-i)) for x in numbers]))
+    smallest = min(smallest, val)
+  return smallest
 
 
 print("puzzle1: ", puzzle1())
