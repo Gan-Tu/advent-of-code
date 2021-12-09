@@ -15,15 +15,15 @@ def parse_input(filename):
   return content
 
 def puzzle1(data):
-  // TODO
+  # TODO
   return
 
 def puzzle2(data):
-  // TODO
+  # TODO
   return
 
-print("example1: ", puzzle1(parse_input("day7.example")))
-print("puzzle1: ", puzzle1(parse_input("day7.input")))
-print("example2: ", puzzle2(parse_input("day7.example")))
-print("puzzle2: ", puzzle2(parse_input("day7.input")))
+print("example1: ", puzzle1(parse_input("${FILENAME}.example")))
+print("puzzle1: ", puzzle1(parse_input("${FILENAME}.input")))
+print("example2: ", puzzle2(parse_input("${FILENAME}.example")))
+print("puzzle2: ", puzzle2(parse_input("${FILENAME}.input")))
 EOM
