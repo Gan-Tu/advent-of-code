@@ -6,26 +6,24 @@ echo Creating templates for day ${DAY_NUMBER}
 
 mkdir -p ${FILENAME}
 touch ${FILENAME}/${FILENAME}.input
+touch ${FILENAME}/${FILENAME}.example
 cat > ${FILENAME}/${FILENAME}.py << EOM
 import os
 
-def parse_input():
-  input_filepath = os.path.join(os.path.dirname(__file__), "${FILENAME}.input")
-  return open(input_filepath).read().split("\n")
+def parse_input(filename):
+  content =  open(os.path.join(os.path.dirname(__file__), filename)).read()
+  return content
 
-def puzzle1():
-  lines = parse_input()
-  # TODO
+def puzzle1(data):
+  // TODO
   return
 
-
-
-def puzzle2():
-  lines = parse_input()
-  # TODO
+def puzzle2(data):
+  // TODO
   return
 
-
-print("puzzle1: ", puzzle1())
-print("puzzle2: ", puzzle2())
+print("example1: ", puzzle1(parse_input("day7.example")))
+print("puzzle1: ", puzzle1(parse_input("day7.input")))
+print("example2: ", puzzle2(parse_input("day7.example")))
+print("puzzle2: ", puzzle2(parse_input("day7.input")))
 EOM
