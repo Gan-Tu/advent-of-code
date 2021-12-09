@@ -1,29 +1,27 @@
 import os
 
-# Example Input: 16,1,2,0,4,2,7,1,2,14
-def parse_input():
-  input_filepath = os.path.join(os.path.dirname(__file__), "day7.input")
-  numbers = open(input_filepath).read().strip().split(",")
-  return [int(x) for x in numbers]
+def parse_input(filename):
+  content =  open(os.path.join(os.path.dirname(__file__), filename)).read()
+  return [int(x) for x in content.strip().split(",")]
 
-def puzzle1():
-  numbers = parse_input()
+def puzzle1(data):
   smallest = float("inf")
-  for i in range(min(numbers), max(numbers)+1):
-    val = sum([abs(x-i) for x in numbers])
+  for i in range(min(data), max(data)+1):
+    val = sum([abs(x-i) for x in data])
     smallest = min(smallest, val)
   return smallest
 
-
-def puzzle2():
-  numbers = parse_input()
+def puzzle2(data):
   smallest = float("inf")
   fuelCost = lambda n: n*(n+1)/2
-  for i in range(min(numbers), max(numbers)+1):
-    val = int(sum([fuelCost(abs(x-i)) for x in numbers]))
+  for i in range(min(data), max(data)+1):
+    val = int(sum([fuelCost(abs(x-i)) for x in data]))
     smallest = min(smallest, val)
   return smallest
 
 
-print("puzzle1: ", puzzle1())
-print("puzzle2: ", puzzle2())
+
+print("example1: ", puzzle1(parse_input("day7.example")))
+print("puzzle1: ", puzzle1(parse_input("day7.input")))
+print("example2: ", puzzle2(parse_input("day7.example")))
+print("puzzle2: ", puzzle2(parse_input("day7.input")))
