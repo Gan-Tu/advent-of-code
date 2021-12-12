@@ -50,11 +50,17 @@ def puzzle1(data, verbose=False):
       print(f"day {day+1} {display(data)}")
   return total
 
-def puzzle2(data):
-  # TODO
-  return
+def puzzle2(data, verbose=False):
+  day = 1
+  while True:
+    data = data + 1
+    total = flash_neighbors(data)
+    data = data.clip(0,10) % 10
+    if total == (len(data) * len(data[0])):
+      return day
+    day += 1
 
 print("example1: ", puzzle1(parse_input("day11.example")))
 print("puzzle1: ", puzzle1(parse_input("day11.input")))
-# print("example2: ", puzzle2(parse_input("day11.example")))
-# print("puzzle2: ", puzzle2(parse_input("day11.input")))
+print("example2: ", puzzle2(parse_input("day11.example")))
+print("puzzle2: ", puzzle2(parse_input("day11.input")))
