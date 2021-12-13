@@ -21,37 +21,44 @@ def parse_input(filename):
     g.add_edge(left, right)
   return g
 
-
-# TODO: add memoization
-def countPaths(graph, cur, curVisited):
-  if cur not in graph.neighbors:
-    return 0
-  if cur in curVisited and not cur.isupper():
-    return 0
-  if cur == "end":
-    return 1
-  total = 0
-  curVisited.add(cur)
-  for v in graph.neighbors[cur]:
-    total += countPaths(graph, v, curVisited.copy())
-  return total
-
-
 def puzzle1(graph):
-  if "start" not in graph.neighbors and "end" not in graph.neighbors:
-    return 0
+  def countPaths(graph, cur, curVisited):
+    if cur not in graph.neighbors:
+      return 0
+    if cur in curVisited and not cur.isupper():
+      return 0
+    if cur == "end":
+      return 1
+    total = 0
+    curVisited.add(cur)
+    for v in graph.neighbors[cur]:
+      total += countPaths(graph, v, curVisited.copy())
+    return total
   return countPaths(graph, "start", set())
 
-def puzzle2(data):
-  # TODO
-  return
+def puzzle2(graph):
+  def countPaths(graph, cur, curVisited):
+    if cur not in graph.neighbors:
+      return 0
+    if cur in curVisited and not cur.isupper():
+      # have a special `repeated-small` to indicate a repeat
+      if "repeated-small" in curVisited:
+        return 0
+      curVisited.add("repeated-small")
+    if cur == "end":
+      return 1
+    total = 0
+    curVisited.add(cur)
+    for v in graph.neighbors[cur]:
+      if v == "start": continue
+      total += countPaths(graph, v, curVisited.copy())
+    return total
+  return countPaths(graph, "start", set())
 
 print("example 1.1: ", puzzle1(parse_input("day12.example1")))
 print("example 1.2: ", puzzle1(parse_input("day12.example2")))
 print("example 1.3: ", puzzle1(parse_input("day12.example3")))
 print("puzzle1: ", puzzle1(parse_input("day12.input")))
 
-# print("example 2.1: ", puzzle2(parse_input("day12.example1")))
-# print("example 2.2: ", puzzle2(parse_input("day12.example2")))
-# print("example 2.3: ", puzzle2(parse_input("day12.example3")))
-# print("puzzle2: ", puzzle2(parse_input("day12.input")))
+print("example 2.1: ", puzzle2(parse_input("day12.example1")))
+print("puzzle2: ", puzzle2(parse_input("day12.input")))
