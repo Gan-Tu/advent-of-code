@@ -16,7 +16,7 @@ def draw_points(points):
   image = [["." for i in range(width)] for j in range(height)]
   for p in points:
     image[p[1]][p[0]] = "#"
-  return "\n" + "\n".join(["".join(r) for r in image])
+  return "\n" + "\n".join([" ".join(r) for r in image])
 
 
 def puzzle1(data):
