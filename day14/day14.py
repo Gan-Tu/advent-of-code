@@ -40,10 +40,28 @@ def puzzle1(data):
   return max(values) - min(values)
 
 def puzzle2(data):
-  # TODO
-  return
+  seq, mappings = data
+  counts = { x: 0 for x in mappings}
+  for i in range(len(seq)-1):
+    s = seq[i:i+2]
+    if s in counts:
+      counts[s] += 1
+  result = Counter(seq)
+  for _ in range(40):
+    for key, val in list(counts.items()):
+      if val > 0:
+        s1 = key[0] + mappings[key]
+        s2 = mappings[key] + key[1]
+        if s1 in counts:
+          counts[s1] += val
+        if s2 in counts:
+          counts[s2] += val
+        result[mappings[key]] += val
+        counts[key] -= val
+  vals = result.values()
+  return max(vals) - min(vals)
 
 print("example1: ", puzzle1(parse_input("day14.example")))
 print("puzzle1: ", puzzle1(parse_input("day14.input")))
-# print("example2: ", puzzle2(parse_input("day14.example")))
-# print("puzzle2: ", puzzle2(parse_input("day14.input")))
+print("example2: ", puzzle2(parse_input("day14.example")))
+print("puzzle2: ", puzzle2(parse_input("day14.input")))
