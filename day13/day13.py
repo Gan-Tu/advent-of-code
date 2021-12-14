@@ -40,10 +40,27 @@ def puzzle1(data):
     return len(visible)
 
 def puzzle2(data):
-  # TODO
-  return
+  points, folds = data
+  for axis, axisVal in folds:
+    if axis == "x":
+      visible = set()
+      for p in points:
+        if p[0] < axisVal:
+          visible.add(tuple(p))
+        else:
+          visible.add((axisVal - (p[0] - axisVal), p[1]))
+      points = visible
+    else:
+      visible = set()
+      for p in points:
+        if p[1] < axisVal:
+          visible.add(tuple(p))
+        else:
+          visible.add((p[0], (axisVal - (p[1] - axisVal))))
+      points = visible
+  return draw_points(points)
 
 print("example1: ", puzzle1(parse_input("day13.example")))
 print("puzzle1: ", puzzle1(parse_input("day13.input")))
-# print("example2: ", puzzle2(parse_input("day13.example")))
-# print("puzzle2: ", puzzle2(parse_input("day13.input")))
+print("example2: ", puzzle2(parse_input("day13.example")))
+print("puzzle2: ", puzzle2(parse_input("day13.input")))
