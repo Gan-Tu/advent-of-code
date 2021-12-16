@@ -1,4 +1,5 @@
 import os
+from tqdm import tqdm
 from heapq import heapify, heappush, heappop, heapreplace
 
 class HeapItem:
@@ -36,27 +37,32 @@ def puzzle1(data):
 
   # queue
   queue = []
+  posToHeapItem = {}
   for key, val in dist.items():
-    heappush(queue, HeapItem(val, key))
+    item = HeapItem(val, key)
+    posToHeapItem[key] = item
+    heappush(queue, item)
 
   done = False
-  while not done and len(queue) > 0:
-    x = heappop(queue)
-    row, col = x.data
-    for dx, dy in [[-1,0], [1,0], [0,1], [0,-1]]:
-      row2, col2 = row + dx, col + dy
-      if (row2, col2) in dist:
-        altDist = dist[(row, col)] + data[row2][col2]
-        if altDist < dist[(row2, col2)]:
-          dist[(row2, col2)] = altDist
-          prev[(row2, col2)] = (row, col)
-          for q in queue:
-            if q.data == (row2, col2):
-              q.val = altDist
-          heapify(queue)
-    visited.add((row, col))
-
   end = (len(data)-1, len(data[0])-1)
+  with tqdm(total=len(queue)) as pbar:
+    while not done and len(queue) > 0:
+      x = heappop(queue)
+      row, col = x.data
+      for dx, dy in [[-1,0], [1,0], [0,1], [0,-1]]:
+        row2, col2 = row + dx, col + dy
+        if (row2, col2) in dist:
+          altDist = dist[(row, col)] + data[row2][col2]
+          if altDist < dist[(row2, col2)]:
+            dist[(row2, col2)] = altDist
+            prev[(row2, col2)] = (row, col)
+            q = posToHeapItem[(row2, col2)]
+            q.val = altDist
+            heapify(queue)
+      visited.add((row, col))
+      pbar.update(1)
+      if (row, col) == end:
+        break
   return dist[end]
 
 def puzzle2(data):
