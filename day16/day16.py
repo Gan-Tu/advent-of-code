@@ -1,4 +1,5 @@
 import os
+from functools import reduce
 
 def parse_input(filename):
   content =  open(os.path.join(os.path.dirname(__file__), filename)).read()
@@ -49,7 +50,7 @@ def decodePacket(binStr):
   packetType, rest = consumePacketType(rest)
   if isLiteralValue(packetType):
     value, rest = consumeLiteralValues(rest)
-    return {"version": version, "value": value}, rest
+    return {"version": version, "packetType": packetType, "value": value}, rest
   lengthIdType, rest = consumeOperatorLengthTypeId(rest)
   if isTotalLengthInBits(lengthIdType):
     numOfBits, rest = getNumberOfBits(rest)
@@ -58,7 +59,7 @@ def decodePacket(binStr):
     while len(packetBits) > 0:
       res, packetBits = decodePacket(packetBits)
       packets.append(res)
-    return {"version": version, "packets": packets}, rest
+    return {"version": version, "packetType": packetType, "packets": packets}, rest
   else:
     # number of subpackets
     numOfSubPackets, rest = getNumberOfSubPackets(rest)
@@ -66,7 +67,7 @@ def decodePacket(binStr):
     for i in range(numOfSubPackets):
       res, rest = decodePacket(rest)
       packets.append(res)
-    return {"version": version, "packets": packets}, rest
+    return {"version": version, "packetType": packetType, "packets": packets}, rest
 
 def sumVersions(result):
   versionSum = result.get("version", 0)
@@ -79,16 +80,48 @@ def sumVersions(result):
 def puzzle1(data):
   result = []
   for hexStr in data:
-    result.append((sumVersions(decodePacket(hexToBinary(hexStr))[0]), hexStr))
+    context = hexStr if len(hexStr) < 20 else "omitted"
+    result.append((sumVersions(decodePacket(hexToBinary(hexStr))[0]), context))
   return result
 
-def puzzle2(data):
-  # TODO
-  return
+def computeValue(packet):
+  packetType = packet["packetType"]
+  if packetType == 4:
+    return packet["value"]
+  subPacketValues = [computeValue(p) for p in packet["packets"]]
+  if packetType == 0:
+    return sum(subPacketValues)
+  elif packetType == 1:
+    return reduce(lambda x, y: x*y, subPacketValues)
+  elif packetType == 2:
+    return min(subPacketValues)
+  elif packetType == 3:
+    return max(subPacketValues)
+  elif packetType == 5:
+    if subPacketValues[0] > subPacketValues[1]:
+      return 1
+    return 0
+  elif packetType == 6:
+    if subPacketValues[0] < subPacketValues[1]:
+      return 1
+    return 0
+  elif packetType == 7:
+    if subPacketValues[0] == subPacketValues[1]:
+      return 1
+    return 0
+  raise RuntimeError(f"Unknown packet type {packetType}")
 
-print("example1: ", puzzle1(parse_input("day16.example")))
+def puzzle2(data):
+  result = []
+  for hexStr in data:
+    packet, _ = decodePacket(hexToBinary(hexStr))
+    context = hexStr if len(hexStr) < 20 else "omitted"
+    result.append((computeValue(packet), context))
+  return result
+
+print("example1: ", puzzle1(parse_input("day16.example1")))
 print("puzzle1: ", puzzle1(parse_input("day16.input")))
-print("example2: ", puzzle2(parse_input("day16.example")))
+print("example2: ", puzzle2(parse_input("day16.example2")))
 print("puzzle2: ", puzzle2(parse_input("day16.input")))
 
 
