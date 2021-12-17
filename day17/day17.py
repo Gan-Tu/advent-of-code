@@ -12,6 +12,12 @@ def parse_input(filename):
 def sum1toN(n):
   return int(n * (n+1) / 2)
 
+def smallestNtoValue(value):
+  i = 1
+  while sum1toN(i) < value:
+    i += 1
+  return i
+
 def puzzle1(data):
   # The idea is that when shooting up, it will eventually goes down to height zero
   # again, and from there, the biggest jump it can take in order to not shot over
@@ -21,13 +27,36 @@ def puzzle1(data):
   x_left, x_right, y_low, y_high = data
   return sum1toN(abs(y_low) - 1)
 
+def isValidShot(x_left, x_right, y_low, y_high, initX, initY):
+  pos = [0,0]
+  vx, vy = initX, initY
+  while pos[0] <= x_right and pos[1] >= y_low:
+    if pos[0] < x_left and vx == 0:
+      return False
+    if pos[0] >= x_left and pos[0] <= x_right:
+      if pos[1] >= y_low and pos[1] <= y_high:
+        return True
+    pos[0] += vx
+    pos[1] += vy
+    vx = max(0, vx-1)
+    vy = vy - 1
+  return False
+
+
 def puzzle2(data):
-  # TODO
-  return data
+  x_left, x_right, y_low, y_high = data
+  # smallest x is when it reaches 0, we just arrived in left
+  # highest x is when it reaches right side in one go
+  # smallest y is it doesn't shoot over y_low downwards right away
+  # highest y is puzzle 1
+  result = []
+  for x in range(smallestNtoValue(x_left), x_right+1):
+    for y in range(y_low, sum1toN(abs(y_low) - 1)+1):
+      if isValidShot(x_left, x_right, y_low, y_high, x, y):
+        result.append((x,y))
+  return len(result)
 
-print("example1: ", puzzle1(parse_input("day17.example")))
-print("puzzle1: ", puzzle1(parse_input("day17.input")))
-# print("example2: ", puzzle2(parse_input("day17.example")))
-# print("puzzle2: ", puzzle2(parse_input("day17.input")))
-
-
+print("example1: ", puzzle1(parse_input("day17.example")))  # 45
+print("puzzle1: ", puzzle1(parse_input("day17.input"))) # 4186
+print("example2: ", puzzle2(parse_input("day17.example")))  #  112
+print("puzzle2: ", puzzle2(parse_input("day17.input"))) # 2709
