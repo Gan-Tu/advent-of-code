@@ -189,6 +189,14 @@ def parse_input(filename):
   content = [Node(0, x) for x in content]
   return content
 
+def runReduce(data):
+  while True:
+    if data.explode():
+      continue
+    if data.split():
+      continue
+    break
+  return data
 
 def puzzle1(data):
   result = None
@@ -197,15 +205,24 @@ def puzzle1(data):
       result = n
     else:
       result += n
-    while True:
-      if result.explode():
-        continue
-      if result.split():
-        continue
-      break
-  print(result)
+    runReduce(result)
+  # print(result)
   return result.magnitude
 
+
+def puzzle2(data):
+  largest = -1
+  largestPair = []
+  for i in range(len(data)):
+    for j in range(0, len(data)):
+      if i == j: continue
+      node = data[i] + data[j]
+      runReduce(node)
+      if node.magnitude > largest:
+        largestPair = [data[i], data[j]]
+        largest = node.magnitude
+  # print(largestPair)
+  return largest
 
 
 print("\n\n======= Examples & Puzzles =============")
@@ -218,6 +235,5 @@ print("example 1.5: ", puzzle1(parse_input("day18.example5")))
 
 print("puzzle1: ", puzzle1(parse_input("day18.input")))
 
-# print("example 2.1: ", puzzle2(parse_input("day18.example1")))
-# print("example 2.2: ", puzzle2(parse_input("day18.example2")))
-# print("puzzle2: ", puzzle2(parse_input("day18.input")))
+print("example 2", puzzle2(parse_input("day18.example5")))
+print("puzzle2: ", puzzle2(parse_input("day18.input")))
